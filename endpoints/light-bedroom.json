@@ -1,0 +1,27 @@
+{
+  "endpointId": "light-bedroom",
+  "manufacturerName": "IRISOHYAMA",
+  "friendlyName": "寝室の電気",
+  "description": "寝室の電気です",
+  "displayCategories": ["LIGHT"],
+  "cookie": {},
+  "capabilities":
+    [
+      {
+        "type": "AlexaInterface",
+        "interface": "Alexa",
+        "version": "3"
+      },
+      {
+        "interface": "Alexa.PowerController",
+        "version": "3",
+        "type": "AlexaInterface",
+        "properties": {
+          "supported": [{
+            "name": "powerState"
+          }],
+          "retrievable": true
+        }
+      }
+    ]
+}

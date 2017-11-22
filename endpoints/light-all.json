@@ -1,0 +1,27 @@
+{
+  "endpointId": "light-all",
+  "manufacturerName": "IRISOHYAMA",
+  "friendlyName": "電気全部",
+  "description": "リビングと寝室の電気です",
+  "displayCategories": ["LIGHT"],
+  "cookie": {},
+  "capabilities":
+    [
+      {
+        "type": "AlexaInterface",
+        "interface": "Alexa",
+        "version": "3"
+      },
+      {
+        "interface": "Alexa.PowerController",
+        "version": "3",
+        "type": "AlexaInterface",
+        "properties": {
+          "supported": [{
+            "name": "powerState"
+          }],
+          "retrievable": true
+        }
+      }
+    ]
+}

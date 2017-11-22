@@ -1,0 +1,27 @@
+{
+  "endpointId": "aircon",
+  "manufacturerName": "MITSUBISHI",
+  "friendlyName": "エアコン",
+  "description": "リビングのエアコンです",
+  "displayCategories": ["THERMOSTAT"],
+  "cookie": {},
+  "capabilities":
+    [
+      {
+        "type": "AlexaInterface",
+        "interface": "Alexa",
+        "version": "3"
+      },
+      {
+        "interface": "Alexa.PowerController",
+        "version": "3",
+        "type": "AlexaInterface",
+        "properties": {
+          "supported": [{
+            "name": "powerState"
+          }],
+          "retrievable": true
+        }
+      }
+    ]
+}

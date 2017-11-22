@@ -1,0 +1,17 @@
+# project
+serverless.yml
+
+# vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+

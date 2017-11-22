@@ -1,0 +1,39 @@
+service: alexa-smart-home-irkit
+
+provider:
+  # ${} はCloudFormationの変数と被るので、Serverlessの変数定義形式を ${} から ${{}} に変える
+  variableSyntax: '\${{([ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}}'
+
+  name: aws
+  runtime: nodejs6.10
+
+  stage: dev
+  region: us-west-2
+  profile: alexa-smart-home-irkit
+  # deploymentBucket: alexa-smart-home-irkit-serverless-deployment
+
+  environment:
+    IRKIT_CLIENT_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    IRKIT_DEVICE_ID: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    ALEXA_APPLICATION_ID: amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "arn:aws:lambda:${{self:provider.stage}}:791415654504:function:homeAlexa"
+      Condition:
+        StringEquals:
+          "lambda:EventSourceToken": ${{self:provider.environment.ALEXA_APPLICATION_ID}}
+
+package:
+  exclude:
+    - .vscode
+    - .gitignore
+    - .envrc
+
+functions:
+  api:
+    handler: handler.alexa
+    events:
+      - alexaSmartHome: ${{self:provider.environment.ALEXA_APPLICATION_ID}}
