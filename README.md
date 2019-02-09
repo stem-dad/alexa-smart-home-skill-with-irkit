@@ -11,3 +11,19 @@ Alexaには①カスタムスキルと②スマートホームスキル、③フ
 一方、②のスマートホームスキルでは、「アレクサ、電気をつけて」という感じで、呼び出し名がいらず「対象+アクション」のみでスキルを起動できます。その代わり、アクションはON/OFFや温度を上げる/下げるなど、限られたものだけしか対応していません。
 
 ここでは Smart Home スキルを作成し、Lambdaからirkitの信号をPOSTすることで、Amazon Echo (dot) に呼びかけるだけで室内のirkitを用いた家電の制御ができるようになります。
+
+
+## 開発で使うコマンド
+
+irkitを探してIPも確認
+
+```
+dns-sd -B _irkit._tcp
+dns-sd -G v4 iRKit****.local
+```
+
+irkitがキャッチした赤外線信号のjsonを取得
+
+```
+curl -i "http://[irkitのIP]/messages" -H "X-Requested-With: curl"
+```

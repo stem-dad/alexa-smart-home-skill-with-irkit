@@ -13,15 +13,41 @@
         "version": "3"
       },
       {
+        "type": "AlexaInterface",
         "interface": "Alexa.PowerController",
         "version": "3",
-        "type": "AlexaInterface",
         "properties": {
           "supported": [{
             "name": "powerState"
           }],
           "retrievable": true
         }
+      },
+      {
+        "type": "AlexaInterface",
+        "interface": "Alexa.ChannelController",
+        "version": "3"
+      },
+      {
+        "type": "AlexaInterface",
+        "interface": "Alexa.StepSpeaker",
+        "version": "3"
+      },
+      {
+        "type": "AlexaInterface",
+        "interface": "Alexa.InputController",
+        "version": "3",
+        "inputs": [
+          {
+            "name": "TV"
+          },
+          {
+            "name": "HDMI 1"
+          },
+          {
+            "name": "HDMI 2"
+          }
+        ]
       }
     ]
 }
