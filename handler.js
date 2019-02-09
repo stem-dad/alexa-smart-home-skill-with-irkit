@@ -251,14 +251,12 @@ function handlePowerControl (request, context, callback) {
  */
 function handleChannelControl (request, context, callback) {
   let endpointId = request.directive.endpoint.endpointId
-  let powerResult = 'ON'
   let payload = request.directive.payload
   let channel = null
 
   if (payload.channel.number) {
     channel = parseInt(payload.channel.number)
-  }
-  else if (payload.channelMetadata.name) {
+  } else if (payload.channelMetadata.name) {
     // 千葉県のチャンネル配置です。1〜9チャン。
     let channelMap = ['none', 'nhk', 'e テレ', 'none', '日テレ', 'テレ朝', 'tbs', 'テレビ東京', 'フジテレビ', '東京MX']
     channel = channelMap.indexOf(payload.channelMetadata.name)
@@ -272,6 +270,83 @@ function handleChannelControl (request, context, callback) {
       .then(() => {
         sendResponse()
       })
+  } else {
+    // 該当ないけど、とりあえず「はい」と言わせる
+    sendResponse()
+  }
+
+  function sendResponse () {
+    let contextResult = {
+      properties: [{
+        namespace:                 'Alexa.ChannelController',
+        name:                      'channel',
+        value:                     {
+          number:            '1234',
+          callSign:          'callsign1',
+          affiliateCallSign: 'callsign2'
+        },
+        timeOfSample:              '2017-09-03T16:20:50.52Z', //retrieve from result.
+        uncertaintyInMilliseconds: 0
+      }]
+
+    }
+    let responseHeader = request.directive.header
+    responseHeader.namespace = 'Alexa'
+    responseHeader.name = 'Response'
+    responseHeader.messageId = responseHeader.messageId + '-R'
+    let endpoint = {
+      scope:      {
+        type:  'BearerToken',
+        token: 'Alexa-access-token'
+      },
+      endpointId: endpointId
+    }
+    let response = {
+      context:  contextResult,
+      event:    {
+        header: responseHeader
+      },
+      endpoint: endpoint,
+      payload:  {}
+    }
+
+    // console.log('DEBUG', 'Alexa.PowerController ', JSON.stringify(response))
+    context.succeed(response)
+  }
+}
+
+/**
+ * TVの音量のコントロール
+ * @param {*} request
+ * @param {*} context
+ * @param {Function} callback
+ */
+async function handleStepSpeaker (request, context, callback) {
+  let endpointId = request.directive.endpoint.endpointId
+  let payload = request.directive.payload
+  let volumeSteps = payload.volumeSteps
+
+  // 音量下げての場合-10になっているのを-1に変換する
+  if (payload.volumeSteps.volumeStepsDefault) {
+    if (payload.volumeSteps < 0) {
+      volumeSteps = -1
+    } else {
+      volumeSteps = 1
+    }
+  }
+
+  console.log('[handleChannelControl] volumeSteps: ', volumeSteps, ',payload: ', payload)
+
+  if (volumeSteps) {
+    const jsonName = volumeSteps < 0 ? 'tv-volume-down' : 'tv-volume-up'
+    let count = Math.abs(volumeSteps)
+    const timeout = ms => new Promise(res => setTimeout(res, ms))
+
+    for (let i = 0; i < count; i++) {
+      await sendJsonCommandToIrkit(jsonName)
+      await timeout(500)
+    }
+    sendResponse()
   } else {
     // 該当ないけど、とりあえず「はい」と言わせる
     sendResponse()
@@ -334,8 +409,9 @@ module.exports.alexa = (request, context, callback) => {
       handlePowerControl(request, context, callback)
     }
   } else if (request.directive.header.namespace === 'Alexa.ChannelController') {
-    console.log('Alexa.ChannelController!!!!')
     handleChannelControl(request, context, callback)
+  } else if (request.directive.header.namespace === 'Alexa.StepSpeaker') {
+    handleStepSpeaker(request, context, callback)
   } else if (request.directive.header.namespace === 'Alexa.InputController') {
     console.log('Alexa.InputController!!!!')
   }
