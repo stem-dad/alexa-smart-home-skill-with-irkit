@@ -27,3 +27,7 @@ irkitがキャッチした赤外線信号のjsonを取得
 ```
 curl -i "http://[irkitのIP]/messages" -H "X-Requested-With: curl"
 ```
+
+## 参考
+- [Alexa.StepSpeakerインターフェース](https://developer.amazon.com/ja/docs/device-apis/alexa-stepspeaker.html)
+- [Alexa.ChannelControllerインターフェース](https://developer.amazon.com/ja/docs/device-apis/alexa-channelcontroller.html)
