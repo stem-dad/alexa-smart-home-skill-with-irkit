@@ -344,7 +344,7 @@ async function handleStepSpeaker (request, context, callback) {
 
     for (let i = 0; i < count; i++) {
       await sendJsonCommandToIrkit(jsonName)
-      await timeout(500)
+      await timeout(100)
     }
     sendResponse()
   } else {
@@ -354,18 +354,7 @@ async function handleStepSpeaker (request, context, callback) {
 
   function sendResponse () {
     let contextResult = {
-      properties: [{
-        namespace:                 'Alexa.ChannelController',
-        name:                      'channel',
-        value:                     {
-          number:            '1234',
-          callSign:          'callsign1',
-          affiliateCallSign: 'callsign2'
-        },
-        timeOfSample:              '2017-09-03T16:20:50.52Z', //retrieve from result.
-        uncertaintyInMilliseconds: 0
-      }]
-
+      properties: []
     }
     let responseHeader = request.directive.header
     responseHeader.namespace = 'Alexa'
