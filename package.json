@@ -1,0 +1,22 @@
+{
+  "name": "alexa-smart-home-skill-with-irkit",
+  "version": "1.0.0",
+  "description": "---",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/stem-dad/alexa-smart-home-skill-with-irkit.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stem-dad/alexa-smart-home-skill-with-irkit/issues"
+  },
+  "homepage": "https://github.com/stem-dad/alexa-smart-home-skill-with-irkit#readme",
+  "dependencies": {
+    "request": "^2.88.2"
+  }
+}

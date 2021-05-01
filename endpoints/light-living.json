@@ -1,7 +1,7 @@
 {
   "endpointId": "light-living",
   "manufacturerName": "IRISOHYAMA",
-  "friendlyName": "電気",
+  "friendlyName": "リビングの電気",
   "description": "リビングの電気です",
   "displayCategories": ["LIGHT"],
   "cookie": {},

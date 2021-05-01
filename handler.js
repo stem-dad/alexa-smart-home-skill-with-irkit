@@ -1,4 +1,7 @@
-let exec = require('child_process').exec
+//const https = require('https')
+//const querystring = require('querystring')
+const request = require('request')
+const exec = require('child_process').exec
 
 /**
  * AlexaのDiscoveryリクエストにレスポンスする
@@ -12,12 +15,13 @@ function handleDiscovery (request, context) {
       [
         require(__dirname + '/endpoints/tv.json'),
         require(__dirname + '/endpoints/aircon.json'),
-        require(__dirname + '/endpoints/light-bedroom.json'),
+        require(__dirname + '/endpoints/light-dining.json'),
         require(__dirname + '/endpoints/light-living.json'),
         require(__dirname + '/endpoints/light-all.json'),
         require(__dirname + '/endpoints/roomba.json')
       ]
   }
+  console.log(request.directive)
   let header = request.directive.header
   header.name = 'Discover.Response'
   console.log('DEBUG', 'Discovery Response: ', JSON.stringify({header: header, payload: payload}))
@@ -37,22 +41,67 @@ function sendJsonCommandToIrkit (commandFileName) {
       let commandJson = require(__dirname + `/ir-signals/${commandFileName}.json`)
       let commandJsonString = JSON.stringify(commandJson)
 
-
       // irkitのAPIに赤外線コマンドjsonをPOSTして、我が家のirkitから指定の赤外線パターンを発信
       // http://getirkit.com/#toc_11 参照
-      exec(
-        `curl -i "https://api.getirkit.com/1/messages" ` +
-        `-d 'clientkey=${process.env.IRKIT_CLIENT_KEY}' ` +
-        `-d 'deviceid=${process.env.IRKIT_DEVICE_ID}' ` +
-        `-d 'message=${commandJsonString}'`,
-        (error) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve()
-          }
+      //exec(
+      //  `curl -i "https://api.getirkit.com/1/messages" ` +
+      //  `-d 'clientkey=${process.env.IRKIT_CLIENT_KEY}' ` +
+      //  `-d 'deviceid=${process.env.IRKIT_DEVICE_ID}' ` +
+      //  `-d 'message=${commandJsonString}'`,
+      //  (error) => {
+      //    if (error) {
+      //      reject(error)
+      //    } else {
+      //      resolve()
+      //    }
+      //  }
+      //)
+        
+      /*const options = {
+        host: 'api.getirkit.com',
+        path: '/1/messages',
+        port: 443,
+        method: 'POST',
+      }
+      const postData = querystring.stringify({
+        clientkey: process.env.IRKIT_CLIENT_KEY,
+        deviceid: process.env.IRKIT_DEVICE_ID,
+        message: commandJsonString,
+      })
+      const postReq = https.request(options, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+          console.log('Response: ' + chunk);
+          resolve()
+        });
+        res.on('error', function (e) {
+          console.log("Got error: " + e.message);
+          reject()
+        });
+      })
+      postReq.write(postData)
+      postReq.end()*/
+      
+      const options = {
+        uri: "https://api.getirkit.com/1/messages",
+        //headers: {
+        //  "Content-type": "application/x-www-form-urlencoded",
+        //},
+        form: {
+          clientkey: process.env.IRKIT_CLIENT_KEY,
+          deviceid: process.env.IRKIT_DEVICE_ID,
+          message: commandJsonString,
         }
-      )
+      };
+      request.post(options, function(error, response, body){
+        console.log('response', error, body)
+        if (error) {
+          reject(error)
+        } else {
+          console.log('OK')
+          resolve()
+        }
+      })
     } catch (err) {
       console.log('sendJsonCommandToIrkit error', err)
       reject()
@@ -138,20 +187,20 @@ function handlePowerControl (request, context, callback) {
       }
       break
 
-    case 'light-bedroom':
+    case 'light-dining':
       if (requestMethod === 'TurnOn') {
-        sendJsonCommandToIrkit('light-bedroom-onoff')
+        sendJsonCommandToIrkit('light-dining-onoff')
           .then(() => {
             sendResponse()
           })
       } else {
         // OFFは2回ボタンを押さないといけない
-        sendJsonCommandToIrkit('light-bedroom-onoff')
+        sendJsonCommandToIrkit('light-dining-onoff')
           .then(() => {
             return delayMs(800)
           })
           .then(() => {
-            return sendJsonCommandToIrkit('light-bedroom-onoff')
+            return sendJsonCommandToIrkit('light-dining-onoff')
           })
           .then(() => {
             sendResponse()
@@ -161,7 +210,7 @@ function handlePowerControl (request, context, callback) {
 
     case 'light-all':
       if (requestMethod === 'TurnOn') {
-        sendJsonCommandToIrkit('light-bedroom-onoff')
+        sendJsonCommandToIrkit('light-dining-onoff')
           .then(() => {
             return sendJsonCommandToIrkit('light-living-onoff')
           })
@@ -170,7 +219,7 @@ function handlePowerControl (request, context, callback) {
           })
       } else {
         // OFFは2回ボタンを押さないといけない
-        sendJsonCommandToIrkit('light-bedroom-onoff')
+        sendJsonCommandToIrkit('light-dining-onoff')
           .then(() => {
             return sendJsonCommandToIrkit('light-living-onoff')
           })
@@ -178,7 +227,7 @@ function handlePowerControl (request, context, callback) {
             return delayMs(800)
           })
           .then(() => {
-            return sendJsonCommandToIrkit('light-bedroom-onoff')
+            return sendJsonCommandToIrkit('light-dining-onoff')
           })
           .then(() => {
             return delayMs(800)

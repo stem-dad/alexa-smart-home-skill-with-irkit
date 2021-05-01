@@ -1,8 +1,8 @@
 {
-  "endpointId": "light-bedroom",
+  "endpointId": "light-dining",
   "manufacturerName": "IRISOHYAMA",
-  "friendlyName": "寝室の電気",
-  "description": "寝室の電気です",
+  "friendlyName": "ダイニングの電気",
+  "description": "ダイニングの電気です",
   "displayCategories": ["LIGHT"],
   "cookie": {},
   "capabilities":
